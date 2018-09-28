@@ -13,12 +13,14 @@ void addNode(Node** list, char data);
 void printList(Node* list);
 void removeNode(Node **list, char data);
 void deleteList(Node **list);
+void reverseList(Node **list);
 
 
 int main(){
     Node *head = NULL;
 
-    addNode(&head, 'A');
+    addNode(&head, 'A');void reverseList(Node **list);
+
     addNode(&head, 'B');
     addNode(&head, 'C');
     addNode(&head, 'D');
@@ -31,8 +33,7 @@ int main(){
     // removeNode(&head, 'A');
     // printList(head);
 
-    deleteList(&head);
-    printList(head);
+    reverseList(&head);
 
     return 0;
 }
@@ -45,10 +46,6 @@ void addNode(Node** list, char data){
 
     if (*list == NULL){ // the list is empty
         new->next = NULL;
-        *list = new;
-    }
-    else{
-        new->next = *list;
         *list = new;
     }
 }
@@ -99,4 +96,18 @@ void deleteList(Node **list){
         free(current);
         current = next;
     }
+}
+
+void reverseList(Node **list){
+    Node *current, *prev, *next;
+    current = *list;
+    prev = NULL; // this will be the tail initiallly
+
+    while(current != NULL){
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+
 }
