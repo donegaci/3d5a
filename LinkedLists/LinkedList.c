@@ -24,7 +24,7 @@ int main(){
     addNode(&head, 'D');
     printList(head);
 
-    // removeNode(&head, 'D');
+    // removeNode(&head, 'A');
     // printList(head);
     // removeNode(&head, 'B');
     // printList(head);
@@ -53,20 +53,25 @@ void addNode(Node** list, char data){
     }
 }
 
-
-void printList(Node* list){
+void printList(Node *list){
     Node *current = list;
-
-    while( current != NULL){
-        printf("%c\n", current->data);
-        current = current->next;
+    if (list)
+    {
+        while (current != NULL)
+        {
+            printf("%c\n", current->data);
+            current = current->next;
+        }
+        printf("\n");
     }
+    else
+        printf("The list was empty \n");
+    
 }
-
 
 void removeNode(Node **list, char data){
     Node *current = *list;
-    Node *prev = NULL;
+    Node *prev, *next = NULL;
     int found = 0;
 
     while( current != NULL && !found){
@@ -75,17 +80,24 @@ void removeNode(Node **list, char data){
             //printf("Found\n");
 
             if (prev == NULL){ // the head has to be removed
+                printf("About to delete %c\n", current->data);
+                *list = current->next;
                 free(current);
             }
             else{
                 prev->next = current-> next;
+                printf("About to delete %c\n", current->data);
                 free(current);
             }
 
         }
-        prev = current;
-        current = current->next;
+        else{
+            prev = current;
+            current = current->next;
+        }
     }
+    if (!found)
+        printf("%c was not found in the list \n", data);
 }
 
 
@@ -97,6 +109,7 @@ void deleteList(Node **list){
         next = current->next;
         printf("About to delete %c\n", current->data);
         free(current);
+        *list = next;
         current = next;
     }
 }
