@@ -13,6 +13,7 @@ void addNode(Node** list, char data);
 void printList(Node* list);
 void removeNode(Node **list, char data);
 void deleteList(Node **list);
+void reverseList(Node **list);
 
 
 int main(){
@@ -31,7 +32,10 @@ int main(){
     // removeNode(&head, 'A');
     // printList(head);
 
-    deleteList(&head);
+    // deleteList(&head);
+    // printList(head);
+
+    reverseList(&head);
     printList(head);
 
     return 0;
@@ -53,6 +57,7 @@ void addNode(Node** list, char data){
     }
 }
 
+
 void printList(Node *list){
     Node *current = list;
     if (list)
@@ -66,8 +71,8 @@ void printList(Node *list){
     }
     else
         printf("The list was empty \n");
-    
 }
+
 
 void removeNode(Node **list, char data){
     Node *current = *list;
@@ -112,4 +117,24 @@ void deleteList(Node **list){
         *list = next;
         current = next;
     }
+}
+
+
+void reverseList(Node **list){
+    Node *prev = NULL;
+    Node *current = *list;
+    Node *next = *list;
+
+    if (*list){
+        while (current != NULL){
+            next = current->next;
+            //printf("Next data = %c\n", next->data);
+            current->next = prev;
+            prev = current;
+            current = next;
+        }
+        *list = prev;
+    }
+    else
+        printf("The List was empty");
 }
