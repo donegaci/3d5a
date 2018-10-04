@@ -82,7 +82,6 @@ void removeNode(Node **list, char data){
     while( current != NULL && !found){
         if (current->data == data){
             found = 1;
-            //printf("Found\n");
 
             if (prev == NULL){ // the head has to be removed
                 printf("About to delete %c\n", current->data);
@@ -124,16 +123,18 @@ void reverseList(Node **list){
     Node *prev = NULL;
     Node *current = *list;
     Node *next = *list;
+    int count = 0;
 
     if (*list){
         while (current != NULL){
             next = current->next;
-            //printf("Next data = %c\n", next->data);
             current->next = prev;
             prev = current;
             current = next;
+            count++;
         }
         *list = prev;
+        printf("Time complexity = T(%d)\n", count);
     }
     else
         printf("The List was empty");
