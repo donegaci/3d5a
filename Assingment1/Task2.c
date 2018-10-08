@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 const int HASH_TABLE_SIZE  = 73;
 const int MAX_BUFFER = 40;
 
@@ -80,12 +81,17 @@ int main()
 
 int hash(char *s){
     int hash = 0;
+    int count = 1;
     while (*s) {
-        hash = hash + *s;
+        hash = hash + (*s * count*10);
         s++;
+        count++;
     }
-    return hash % HASH_TABLE_SIZE;
+    return (hash % HASH_TABLE_SIZE);
 }
+
+
+
 
 
 /* This function will return the number of collisions that occured */
