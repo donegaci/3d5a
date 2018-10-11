@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const int HASH_TABLE_SIZE  = 71;
+const int HASH_TABLE_SIZE  = 83;
 const int MAX_BUFFER = 40;
 
 typedef struct Hash Hash;
@@ -44,7 +44,7 @@ int main() {
     else
         printf("Error opening file.\n");
 
-    printHashTable(hashTable, HASH_TABLE_SIZE );
+    //printHashTable(hashTable, HASH_TABLE_SIZE );
     printTableStats(hashTable, HASH_TABLE_SIZE, totalCollisions, numTerms);
     userSearch(hashTable);
     return 0;
@@ -75,17 +75,19 @@ int addToHashTable(char *s, Hash *hashTable){
     int numCollisions = 0;
 
     /* Check that the cell in hash table is either empty or contains the same name */
-    if (strcmp(hashTable[index].name, s) == 0 || hashTable[index].frequency == 0){
+    if (hashTable[index].frequency == 0){
         strcpy(hashTable[index].name, s);
         hashTable[index].frequency = (hashTable[index].frequency + 1); // increment frequency by 1
     }
+    else if (strcmp(hashTable[index].name, s) == 0 )
+        hashTable[index].frequency = (hashTable[index].frequency + 1);
     /* Deal with collision */
     else { 
         /* Loop to find a free cell */
         while ( hashTable[index].frequency != 0 ){ 
-            numCollisions++;
+            
             /* If we reach the end of the array, loop back to the first element */
-            if(strcmp(hashTable[index].name, s) != 0 )
+            if(strcmp(hashTable[index].name, s) == 0 )
                 break;
             if (index >= (HASH_TABLE_SIZE-1))
                 index = 0;
@@ -94,6 +96,7 @@ int addToHashTable(char *s, Hash *hashTable){
         }
         strcpy(hashTable[index].name, s);
         hashTable[index].frequency = (hashTable[index].frequency + 1); // increment frequency by 1
+        numCollisions++;
     }
     return numCollisions;
 }
@@ -138,7 +141,7 @@ void userSearch(Hash *hashTable) {
     char userInput[MAX_BUFFER];
     int index;
     
-    printf("\nEnter surname to get firstnames or type 'quit' to escape \n");
+    printf("\nEnter name to get frequency or type 'quit' to escape \n");
     while (1) {
         scanf("%s", userInput);
         if (strcmp(userInput, "quit") == 0)
