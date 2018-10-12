@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define MAX_BUFFER 50
-#define HASH_TABLE_SIZE 67771
+#define HASH_TABLE_SIZE 79031
 
 
 typedef struct chainNode chainNode;
@@ -64,6 +64,8 @@ int main()
     printTableStats(hashTable, HASH_TABLE_SIZE, totalCollisions, numPeople);
     //printHashTable(hashTable, HASH_TABLE_SIZE);
     userSearch(hashTable);
+
+    fclose(f);
     freeHashTable(hashTable, HASH_TABLE_SIZE);
     return 0;
 }

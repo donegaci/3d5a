@@ -48,6 +48,7 @@ int main() {
     //printHashTable(hashTable, HASH_TABLE_SIZE );
     printTableStats(hashTable, HASH_TABLE_SIZE, totalCollisions, numTerms);
     userSearch(hashTable);
+    fclose(f);
     return 0;
 }
 
