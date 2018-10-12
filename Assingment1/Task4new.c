@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_BUFFER 50
+#define HASH_TABLE_SIZE 67771
 
-const int HASH_TABLE_SIZE  = 53;
-const int MAX_BUFFER = 40;
 
 typedef struct chainNode chainNode;
 struct chainNode{
-    char firstname[40];
+    char firstname[MAX_BUFFER];
     chainNode* next;
 };
 
@@ -20,12 +20,17 @@ struct Hash{
 };
 //Person ID,Deposition ID,Surname,Forename,Age,Person Type,Gender,Nationality,Religion,Occupation
 //13191,838198r247,"McGee","Bryan",28,"Deponent","Male","Unknown","Unknown","Husbandman"
-
+struct personRecord{
+    int personId, depositionId, age;
+    char surname[MAX_BUFFER], forename[MAX_BUFFER], personType[MAX_BUFFER], gender[MAX_BUFFER];
+    char nationality[MAX_BUFFER], religion[MAX_BUFFER],occupation[MAX_BUFFER];
+};
 
 void initialiseTable(Hash *hashTable);
+void fetcPersonRecord(FILE *f, struct personRecord *p);
 int hash2(char *s);
 int hash3(char *s);
-int addToHashTable(char *surname, char* firstname,  Hash *hashTable);
+int addToHashTable(struct personRecord *p,  Hash *hashTable);
 int next_field(FILE *f, char *buf, int max);
 void userSearch(Hash *hashTable);
 void printHashTable(Hash *hashTable, int size);
@@ -36,49 +41,54 @@ void freeHashTable(Hash *hashTable, int size);
 int main()
 {
     FILE *f;
-    char buffer[MAX_BUFFER];
     Hash hashTable[HASH_TABLE_SIZE];
+    struct personRecord person;
     int totalCollisions = 0;
-    int numTerms = 0;
-    char surname[MAX_BUFFER];
-    char forename[MAX_BUFFER];
+    int numPeople = 0;
     
 
     initialiseTable(hashTable);
 
-    f = fopen("truncated.csv", "r");
+    f = fopen("people.csv", "r");
     if (f) {
         while (!feof(f)){
-            for(int i=0; i<3; i++){
-                next_field(f, buffer, MAX_BUFFER);
-            }
-            strcpy(surname, buffer);
-            //printf("Surname: %s\n", buffer);
-            next_field(f, buffer, MAX_BUFFER);
-            strcpy(forename, buffer);
-
-            totalCollisions = totalCollisions + addToHashTable(surname, forename, hashTable);
-            //printf("Forename: %s\n\n", buffer);
-            for(int i=0; i<6; i++){
-                next_field(f, buffer, MAX_BUFFER);
-            }
-            // int returnValue = next_field(f, buffer, MAX_BUFFER);
-            // if (returnValue == 0){
-            //     printf("%s\n", buffer);
-            //     // totalCollisions = totalCollisions + addToHashTable(buffer, hashTable);
-            //     // numTerms++;
-            // }
-        }
+        fetcPersonRecord(f, &person);
+        totalCollisions = totalCollisions + addToHashTable(&person, hashTable);
+        numPeople++;
+        }  
     }
     else
         printf("Error opening file.\n");
 
 
-    printTableStats(hashTable, HASH_TABLE_SIZE, totalCollisions, numTerms);
-    printHashTable(hashTable, HASH_TABLE_SIZE);
+    printTableStats(hashTable, HASH_TABLE_SIZE, totalCollisions, numPeople);
+    //printHashTable(hashTable, HASH_TABLE_SIZE);
     userSearch(hashTable);
     freeHashTable(hashTable, HASH_TABLE_SIZE);
     return 0;
+}
+
+//Person ID,Deposition ID,Surname,Forename,Age,Person Type,Gender,Nationality,Religion,Occupation
+//13191,838198r247,"McGee","Bryan",28,"Deponent","Male","Unknown","Unknown","Husbandman"
+void fetcPersonRecord(FILE *f, struct personRecord *p){
+    char buffer[MAX_BUFFER];
+ 
+    next_field(f, buffer, MAX_BUFFER);
+    p->personId = atoi(buffer);
+    next_field(f, buffer, MAX_BUFFER);
+    p->depositionId = atoi(buffer);
+    next_field(f, p->surname, MAX_BUFFER);
+    next_field(f, p->forename, MAX_BUFFER);
+    next_field(f, buffer, MAX_BUFFER);
+    p->age = atoi(buffer);
+    next_field(f, p->personType, MAX_BUFFER);
+    next_field(f, p->gender, MAX_BUFFER);
+    next_field(f, p->nationality, MAX_BUFFER);
+    next_field(f, p->religion, MAX_BUFFER);
+    next_field(f, p->occupation, MAX_BUFFER);
+
+
+
 }
 
 
@@ -114,19 +124,19 @@ int hash3(char *s){
 
 
 /* This function will return the number of collisions that occured */
-int addToHashTable(char *surname, char* firstname,  Hash *hashTable){
-    int index = hash2(surname);
+int addToHashTable(struct personRecord *p,  Hash *hashTable){
+    int index = hash2(p->surname);
     int numCollisions = 0;
 
     /* Check that the cell in hash table is either empty or contains the same surname */
-    if (strcmp(hashTable[index].surname, surname) == 0 || hashTable[index].head == NULL){
+    if (strcmp(hashTable[index].surname, p->surname) == 0 || hashTable[index].head == NULL){
 
         /* Add the first node in the chain*/
         if(hashTable[index].head == NULL){
-            strcpy(hashTable[index].surname, surname);
+            strcpy(hashTable[index].surname, p->surname);
             chainNode *newNode= (chainNode*)malloc(sizeof(chainNode));
             hashTable[index].head = newNode;
-            strcpy(newNode->firstname, firstname);
+            strcpy(newNode->firstname, p->forename);
             newNode->next = NULL;
         }
     
@@ -139,7 +149,7 @@ int addToHashTable(char *surname, char* firstname,  Hash *hashTable){
             }
             chainNode *newNode= (chainNode*)malloc(sizeof(chainNode));
             current->next = newNode;
-            strcpy(newNode->firstname, firstname);
+            strcpy(newNode->firstname, p->forename);
             newNode->next = NULL;
         }
         
@@ -149,16 +159,16 @@ int addToHashTable(char *surname, char* firstname,  Hash *hashTable){
         /* Loop to find a free cell or a cell with the same key */
         while (hashTable[index].head != NULL){ // || strcmp(hashTable[index].surname, surname) ){ 
             /* Ensure we don't go out of bounds of array */
-            if ((index + hash3(surname)) < HASH_TABLE_SIZE)
-                index += hash3(surname);
+            if ((index + hash3(p->surname)) < HASH_TABLE_SIZE)
+                index += hash3(p->surname);
             else
-                index = (index + hash3(surname)) - HASH_TABLE_SIZE;
+                index = (index + hash3(p->surname)) - HASH_TABLE_SIZE;
             numCollisions++;
         }
-        strcpy(hashTable[index].surname, surname);
+        strcpy(hashTable[index].surname, p->surname);
         chainNode *newNode= (chainNode*)malloc(sizeof(chainNode));
         hashTable[index].head = newNode;
-        strcpy(newNode->firstname, firstname);
+        strcpy(newNode->firstname, p->surname);
         newNode->next = NULL;
     }
     return numCollisions;
@@ -224,7 +234,7 @@ void printHashTable(Hash *hashTable, int size){
         
         chainNode *current = hashTable[i].head;
         while(current != NULL){
-            printf(">> firstname: %s, ", current->firstname);
+            printf(">> firstname: %s ", current->firstname);
             current = current->next;
         }
         printf("\n");
@@ -242,7 +252,7 @@ void printTableStats(Hash *hashTable,int size,  int numCollisions , int numTerms
     }
 
     printf("\nCapacity: %d\n", size);
-    printf("Number of Terms: %d\n", numTerms);
+    printf("Number of People: %d\n", numTerms);
     printf("Number of cells occupied: %d\n", numCells);
     printf("Collisions: %d\n", numCollisions);
     printf("Load: %.3f\n", ((double)numCells / (double)HASH_TABLE_SIZE) );
