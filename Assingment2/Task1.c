@@ -14,11 +14,6 @@ static int numComparisons=0;
 
 int main(){
     int test0[10] = {18,89,65,4,98,32,11,78,41,29};
-    int test1[SIZE] = {4, 3, 5, 1, 0, 2};
-    int test2[SIZE] = {3, 3, 2, 1, 1, 4};
-    int test3[SIZE] = {0, 1, 2, 3, 4, 5};
-    int test4[SIZE] = {5, 4, 3, 2, 1, 0};
-    int test5[SIZE] = {3, 3, 3, 3, 3, 3};
     
     // quickSort(test0, 0, 9);
     // // printArray(test0, 10);
@@ -94,6 +89,7 @@ void quickSort(int arr[], int left, int right){
     quickSort(arr, partIndex+1, right);
 }
 
+
 void testPerformance(){
     
     int test1[SIZE] = {4, 3, 5, 1, 0, 2};
@@ -141,5 +137,4 @@ void testPerformance(){
     printArray(test5, 5);
     printf("Uniform list \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
-    
 }
