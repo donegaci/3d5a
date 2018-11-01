@@ -159,7 +159,7 @@ void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]){
     for(int i=0; i<size; i++)
         a1[i] = i;
     shuffle(a1, size);
-    
+
     /* Random value array*/
     for(int i=0; i<size; i++ ) {
       a2[i] = rand();
@@ -179,6 +179,7 @@ void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]){
         a5[i] = 5;
     }
 }
+
 
 /* This function is from BEN PFAFF
 https://benpfaff.org/writings/clc/shuffle.html
