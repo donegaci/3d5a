@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define SIZE 6
+#include <time.h>
+#define SIZE 10000
 
 void quickSort(int arr[], int left, int right);
 int partition(int arr[], int left, int right);
 void swap(int arr[], int index1, int index2);
 void printArray(int arr[], int size);
 void testPerformance();
+void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]);
+void shuffle(int *array, size_t n);
 
 static int numSwaps=0;
 static int numComparisons=0;
@@ -92,16 +95,20 @@ void quickSort(int arr[], int left, int right){
 
 void testPerformance(){
     
-    int test1[SIZE] = {4, 3, 5, 1, 0, 2};
-    int test2[SIZE] = {3, 3, 2, 1, 1, 4};
-    int test3[SIZE] = {0, 1, 2, 3, 4, 5};
-    int test4[SIZE] = {5, 4, 3, 2, 1, 0};
-    int test5[SIZE] = {3, 3, 3, 3, 3, 3};
+    int test1[SIZE]; //= {4, 3, 5, 1, 0, 2};
+    int test2[SIZE]; //= {3, 3, 2, 1, 1, 4};
+    int test3[SIZE]; //= {0, 1, 2, 3, 4, 5};
+    int test4[SIZE]; //= {5, 4, 3, 2, 1, 0};
+    int test5[SIZE]; //= {3, 3, 3, 3, 3, 3};
+
+    /* Fill the arrays*/
+    createTestArrays(test1, test2, test3, test4, test5);
+    //printArray(test1, SIZE);
 
     numSwaps=0; 
     numComparisons=0;
     printArray(test1, 5);
-    quickSort(test1, 0, 5);
+    quickSort(test1, 0, SIZE-1);
     printArray(test1, 5);
     printf("Unique Random Values \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -109,7 +116,7 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test2, 5);
-    quickSort(test2, 0, 5);
+    quickSort(test2, 0, SIZE-1);
     printArray(test2, 5);
     printf("Random Values \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -117,7 +124,7 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test3, 5);
-    quickSort(test3, 0, 5);
+    quickSort(test3, 0, SIZE-1);
     printArray(test3, 5);
     printf("Sorted Array \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -125,7 +132,7 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test4, 5);
-    quickSort(test4, 0, 5);
+    quickSort(test4, 0, SIZE-1);
     printArray(test4, 5);
     printf("Reverse Sorted Array \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -133,8 +140,57 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test5, 5);
-    quickSort(test5, 0, 5);
+    quickSort(test5, 0, SIZE-1);
     printArray(test5, 5);
     printf("Uniform list \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
+}
+
+
+void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]){
+    int size = 10000;
+    time_t t; // this will be the seed for random number generator
+    
+    /* Intializes random number generator */
+    srand((unsigned) time(&t));
+
+    /* Unique Random value array*/
+    /* Fill an array with increasing values than shuffle the array */
+    for(int i=0; i<size; i++)
+        a1[i] = i;
+    shuffle(a1, size);
+    
+    /* Random value array*/
+    for(int i=0; i<size; i++ ) {
+      a2[i] = rand();
+    }
+    /* Sorted Array*/
+    for(int i=0; i<size; i++){
+        a3[i] = i;
+    }
+    /* Reverse Sorted Array*/
+    int index = 0;
+    for(int i=size-1; i>=0; i--){
+        a4[index] = i;
+        index++;
+    }
+    /* Uniform Array*/
+    for(int i=0; i<size; i++){
+        a5[i] = 5;
+    }
+}
+
+/* This function is from BEN PFAFF
+https://benpfaff.org/writings/clc/shuffle.html
+*/
+void shuffle(int *array, size_t n) {
+    if (n > 1) {
+        size_t i;
+        for (i = 0; i < n - 1; i++) {
+          size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
+          int t = array[j];
+          array[j] = array[i];
+          array[i] = t;
+        }
+    }
 }
