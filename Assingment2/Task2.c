@@ -168,7 +168,7 @@ void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]){
 
     /* Random value array*/
     for(int i=0; i<size; i++ ) {
-      a2[i] = rand();
+      a2[i] = rand()%SIZE;
     }
     /* Sorted Array*/
     for(int i=0; i<size; i++){

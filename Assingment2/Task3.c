@@ -50,9 +50,9 @@ int main(){
     quickSort(gameReviews, 0, ARRAY_SIZE-1);
 
     for(int i=0; i<10; i++){
-        printf("%d, ", gameReviews[i].score);
         printf("%s, ", gameReviews[i].title ); 
-        printf("%d\n", gameReviews[i].releaseYear);
+        printf("%d, ", gameReviews[i].releaseYear);
+        printf("%d\n", gameReviews[i].score);
     } 
 
     fclose(f);
