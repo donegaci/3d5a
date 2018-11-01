@@ -36,7 +36,8 @@ int partition(int arr[], int left, int right){
     if(left == right)
         return left;
     
-    int pivot = arr[right];
+    int mid = (left+right)/2;
+    int pivot = arr[mid];
     int leftPointer = left;
     int rightPointer = right -1;
 
@@ -60,7 +61,7 @@ int partition(int arr[], int left, int right){
             //printArray(arr, 6);
         }
     }
-    swap(arr, leftPointer, right); // put the pivot in the right place
+    swap(arr, leftPointer, mid); // put the pivot in the right place
     numSwaps++;
     //printArray(arr, 6);
     return leftPointer;
@@ -162,7 +163,7 @@ void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]){
 
     /* Random value array*/
     for(int i=0; i<size; i++ ) {
-      a2[i] = rand();
+      a2[i] = rand()%SIZE;
     }
     /* Sorted Array*/
     for(int i=0; i<size; i++){
