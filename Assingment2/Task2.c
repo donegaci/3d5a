@@ -1,12 +1,17 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define SIZE 10000
 
 void mergeSort(int arr[], int first, int last);
 void merge (int arr[], int first, int mid, int last);
 void printArray (int arr[], int first, int last);
 void testPerformance();
+void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]);
+void shuffle(int *array, size_t n);
 
-static int numSwaps, numComparisons;
-#define SIZE 6
+static int numSwaps=0;
+static int numComparisons=0;
 
 
 int main(){
@@ -21,6 +26,7 @@ int main(){
     return 0;
 }
 
+
 void mergeSort(int arr[], int first, int last){
     
     if (last > first) {// More than 1 element to sort
@@ -30,6 +36,7 @@ void mergeSort(int arr[], int first, int last){
         merge(arr, first, middle, last);
     }
 }
+
 
 void merge (int arr[], int first, int mid, int last){
     int size1 = (mid-first)+1;
@@ -84,6 +91,7 @@ void merge (int arr[], int first, int mid, int last){
     }
 }
 
+
 void printArray(int arr[], int first, int last){
     if (last !=0){
         for (int i=first; i<=last; i++)
@@ -95,16 +103,18 @@ void printArray(int arr[], int first, int last){
 
 void testPerformance(){
     
-    int test1[SIZE] = {4, 3, 5, 1, 0, 2};
-    int test2[SIZE] = {3, 3, 2, 1, 1, 4};
-    int test3[SIZE] = {0, 1, 2, 3, 4, 5};
-    int test4[SIZE] = {5, 4, 3, 2, 1, 0};
-    int test5[SIZE] = {3, 3, 3, 3, 3, 3};
+    int test1[SIZE];
+    int test2[SIZE];
+    int test3[SIZE];
+    int test4[SIZE];
+    int test5[SIZE];
+
+    createTestArrays(test1, test2, test3, test4, test5);
 
     numSwaps=0; 
     numComparisons=0;
     printArray(test1, 0, 5);
-    mergeSort(test1, 0, 5);
+    mergeSort(test1, 0, SIZE-1);
     printArray(test1, 0, 5);
     printf("Unique Random Values \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -112,7 +122,7 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test2, 0, 5);
-    mergeSort(test2, 0, 5);
+    mergeSort(test2, 0, SIZE-1);
     printArray(test2, 0, 5);
     printf("Random Values \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -120,7 +130,7 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test3, 0, 5);
-    mergeSort(test3, 0, 5);
+    mergeSort(test3, 0, SIZE-1);
     printArray(test3, 0, 5);
     printf("Sorted Array \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -128,7 +138,7 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test4, 0, 5);
-    mergeSort(test4, 0, 5);
+    mergeSort(test4, 0, SIZE-1);
     printArray(test4, 0, 5);
     printf("Reverse Sorted Array \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
@@ -136,9 +146,58 @@ void testPerformance(){
     numSwaps=0; 
     numComparisons=0;
     printArray(test5, 0, 5);
-    mergeSort(test5, 0, 5);
+    mergeSort(test5, 0, SIZE-1);
     printArray(test5, 0, 5);
     printf("Uniform list \n#Swaps: %d\n", numSwaps);
     printf("#Comparisons: %d\n\n", numComparisons);
+}
+
+
+void createTestArrays(int a1[], int a2[], int a3[], int a4[], int a5[]){
+    int size = 10000;
+    time_t t; // this will be the seed for random number generator
     
+    /* Intializes random number generator */
+    srand((unsigned) time(&t));
+
+    /* Unique Random value array*/
+    /* Fill an array with increasing values than shuffle the array */
+    for(int i=0; i<size; i++)
+        a1[i] = i;
+    shuffle(a1, size);
+
+    /* Random value array*/
+    for(int i=0; i<size; i++ ) {
+      a2[i] = rand();
+    }
+    /* Sorted Array*/
+    for(int i=0; i<size; i++){
+        a3[i] = i;
+    }
+    /* Reverse Sorted Array*/
+    int index = 0;
+    for(int i=size-1; i>=0; i--){
+        a4[index] = i;
+        index++;
+    }
+    /* Uniform Array*/
+    for(int i=0; i<size; i++){
+        a5[i] = 5;
+    }
+}
+
+
+/* This function is from BEN PFAFF
+https://benpfaff.org/writings/clc/shuffle.html
+*/
+void shuffle(int *array, size_t n) {
+    if (n > 1) {
+        size_t i;
+        for (i = 0; i < n - 1; i++) {
+          size_t j = i + rand() / (RAND_MAX / (n - i) + 1);
+          int t = array[j];
+          array[j] = array[i];
+          array[i] = t;
+        }
+    }
 }

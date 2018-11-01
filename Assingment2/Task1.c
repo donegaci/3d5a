@@ -15,6 +15,7 @@ void shuffle(int *array, size_t n);
 static int numSwaps=0;
 static int numComparisons=0;
 
+
 int main(){
     int test0[10] = {18,89,65,4,98,32,11,78,41,29};
     
@@ -94,12 +95,11 @@ void quickSort(int arr[], int left, int right){
 
 
 void testPerformance(){
-    
-    int test1[SIZE]; //= {4, 3, 5, 1, 0, 2};
-    int test2[SIZE]; //= {3, 3, 2, 1, 1, 4};
-    int test3[SIZE]; //= {0, 1, 2, 3, 4, 5};
-    int test4[SIZE]; //= {5, 4, 3, 2, 1, 0};
-    int test5[SIZE]; //= {3, 3, 3, 3, 3, 3};
+    int test1[SIZE];
+    int test2[SIZE];
+    int test3[SIZE];
+    int test4[SIZE];
+    int test5[SIZE];
 
     /* Fill the arrays*/
     createTestArrays(test1, test2, test3, test4, test5);
