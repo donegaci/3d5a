@@ -12,6 +12,7 @@ void insertNode(TreeNode **root, char data);
 TreeNode* searchTree(TreeNode *root, char data);
 void printTree (TreeNode *root);
 TreeNode* newNode(char data);
+void deleteTree(TreeNode *node);
 
 
 int main(){
@@ -30,8 +31,12 @@ int main(){
     scanf("%c", &userInput);
     searchTree(root, userInput);
 
+    deleteTree(root);
+    root = NULL;
+
     return 0;
 }
+
 
 /* This function returns a tree node with both children NULL */
 TreeNode* newNode(char data){
@@ -40,6 +45,7 @@ TreeNode* newNode(char data){
     node->leftChild = node->rightChild = NULL;
     return node;
 }
+
 
 /* This function inserts a node in the correct position of BST */
 void insertNode(TreeNode **root, char data){
@@ -98,4 +104,14 @@ void printTree (TreeNode *root){
     printTree(root->leftChild); //Traverse left subtree
     printf("%c ", root->data); //Print node 
     printTree(root->rightChild); //Traverse right subtree
+}
+
+
+/* Perform post-order traversal recursively to delete tree*/
+void deleteTree(TreeNode *node){
+    if (node != NULL){
+        deleteTree(node->leftChild);
+        deleteTree(node->rightChild);
+        free(node);
+    }
 }
