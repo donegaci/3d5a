@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct TreeNode TreeNode;
 struct TreeNode {
@@ -26,10 +27,13 @@ int main(){
     printTree(root);
     printf("\n");
 
-    char userInput;
-    printf("Enter char to search for in tree\n");
-    scanf("%c", &userInput);
-    searchTree(root, userInput);
+    // Generate random character
+	srand((unsigned) time(NULL));
+
+    char randomletter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"[rand() % 52];
+    searchTree(root, randomletter);
+    randomletter = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"[rand() % 52];
+    searchTree(root, randomletter);
 
     deleteTree(root);
     root = NULL;
