@@ -151,6 +151,7 @@ get_time ( void ) {
     mach_port_deallocate(mach_task_self(), cclock);
     t.tv_sec = mts.tv_sec;
     t.tv_nsec = mts.tv_nsec;
+    static double prev_value = 0.0;
 #else
     static double prev_value = 0.0;
 
