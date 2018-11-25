@@ -1,6 +1,5 @@
 #include "Task1.h"
 
-
 int main(){
 
     // Call this function to allocate memory for the graph
@@ -20,7 +19,6 @@ int main(){
 
     return 0;
 }
-
 
 Node* createNode(int name){
     Node* newNode= (Node*)malloc(sizeof(Node*));
@@ -45,7 +43,6 @@ Graph* createGraph(int nVertices){
     return graph;
 }
 
-
 void initialiseGraph(Graph* graph){
     insertEdge(graph, 'A', 'B');
     insertEdge(graph, 'A', 'D');
@@ -59,13 +56,11 @@ void initialiseGraph(Graph* graph){
     insertEdge(graph, 'F', 'C');
 }
 
-
 void insertEdge(Graph* graph, int source, int dest ){
     Node* newNode = createNode(dest);
     newNode->next = graph->array[source];
     graph->array[source] = newNode;
 }
-
 
 void printGraph(Graph* graph){
 
@@ -79,7 +74,6 @@ void printGraph(Graph* graph){
         printf("\n");
     }
 }
-
 
 // Recursive function
 void depthFirstSearch(Graph* graph, int vertex) {
@@ -97,7 +91,6 @@ void depthFirstSearch(Graph* graph, int vertex) {
     }
 }
 
-
 Queue* createQueue(){
     Queue* q = malloc(sizeof(Queue));
     // initialise pointers to empty
@@ -105,7 +98,6 @@ Queue* createQueue(){
     q->rear = -1;
     return q;
 }
-
 
 void enqueue(Queue* q, int value){
     if(q->rear == MAX -1)
@@ -117,7 +109,6 @@ void enqueue(Queue* q, int value){
         q->items[q->rear] = value;
     }
 }
-
 
 int dequeue(Queue* q){
     if(isEmpty(q)){
@@ -133,7 +124,6 @@ int dequeue(Queue* q){
     }
 }
 
-
 int isEmpty(Queue* q) {
     if(q->rear == -1) 
         return 1;
@@ -141,12 +131,10 @@ int isEmpty(Queue* q) {
         return 0;
 }
 
-
 void setNotVisited(Graph* graph){
     for(int i= 'A'; i<('A' + graph->numVertices); i++)
         graph->visited[i] = 0;
 }
-
 
 void breadthFirstSearch(Graph* graph, int vertex){
     Queue* q = createQueue();
