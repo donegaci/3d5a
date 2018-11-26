@@ -1,4 +1,5 @@
 #include "Task2.h"
+#define MAX_SIZE 40
 
 
 int main(){
@@ -8,6 +9,7 @@ int main(){
     // I call this function to create edges and weights in my graph
     initialiseGraph(graph);
     printGraph(graph);
+
 
     return 0;
 }
@@ -26,11 +28,13 @@ Graph* createGraph(int nVertices){
     graph->numVertices = nVertices;
     graph->array = malloc(nVertices * sizeof(Node*));
     graph->visited = malloc(nVertices * sizeof(int));
+    graph->previous = malloc(nVertices * sizeof(int));
 
     // I want to be able to access my array with the chars so
-    for(int i= 'A'; i < ('A' + nVertices); i++){
+    for(int i= 0; i < nVertices; i++){
         graph->array[i] = NULL;
         graph->visited[i] = 0; // set visited to false
+        // graph->previous[i] = -1; // set previous to undefined
     }
     return graph;
 }
@@ -53,22 +57,21 @@ void initialiseGraph(Graph* graph){
 
 void insertEdge(Graph* graph, int source, int dest, int weight ){
     Node* newNode = createNode(dest, weight);
-    newNode->next = graph->array[source];
-    graph->array[source] = newNode;
+    newNode->next = graph->array[toIndex(source)];
+    graph->array[toIndex(source)] = newNode;
 
     // Since this graph is undirected
     // Create edge from dest to source also
     newNode = createNode(source, weight);
-    newNode->next = graph->array[dest];
-    graph->array[dest] = newNode;
+    newNode->next = graph->array[toIndex(dest)];
+    graph->array[toIndex(dest)] = newNode;
 
 }
 
 void printGraph(Graph* graph){
-
-     for(int i= 'A'; i<('A' + graph->numVertices); i++){
+     for(int i= 0 ; i<graph->numVertices; i++){
         Node* temp = graph->array[i];
-        printf("%c : ", i);
+        printf("%c : ", toLetter(i));
         while(temp){
             printf(" -> %c", temp->vertex);
             temp = temp->next;
@@ -93,9 +96,11 @@ void depthFirstSearch(Graph* graph, int vertex) {
     }
 }
 
-void setNotVisited(Graph* graph){
-    for(int i= 'A'; i<('A' + graph->numVertices); i++)
-        graph->visited[i] = 0;
+void resetGraph(Graph* graph){
+    for(int i= 'A'; i<('A' + graph->numVertices); i++){
+        graph->visited[i] = 0; // set visited to false
+        graph->previous[i] = -1; // set previous to undefined
+    }
 }
 
 // MinHeapNode* createMinHeapNode(int vertex, int distance){
@@ -104,8 +109,62 @@ void setNotVisited(Graph* graph){
 //     new->vertex = vertex;
 //     return new;
 // }
-// MinHeap* createMinHeap(int capacity){
 
+// MinHeap* createMinHeap(int capacity){
+//     MinHeap* minHeap = (MinHeap*)malloc(sizeof(MinHeap));
+//     minHeap->size = 0;
+//     minHeap->capacity = capacity;
+//     minHeap->array = (MinHeapNode**)malloc(capacity * sizeof(MinHeapNode*));
+//     return minHeap;
+// }
+
+// void addToMinHeap(MinHeap* heap, Node* vertex){
+//     if(heap->size == heap->capacity){
+//         printf("ERROR. HEAP FULL.\n");
+//         return;
+//     }
+//     // Insert the new node at the end
+//     MinHeapNode* new = createMinHeapNode(vertex->vertex, vertex->distance);
+//     heap->size++;
+//     int i = heap->size -1;
+//     heap->array[i] = new;
+
+//     // Repair min heap
+//     // while youre not at the root item in heap and new is less than parent
+//     while(i != 0 && heap->array[parent(i)] > heap->array[i]){ 
+//         // swim the new node up
+//         swap( &(heap->array[i]), &(heap->array[parent(i)]) );
+//         i = parent(i);
+//     }
+// }
+
+// int isHeapEmpty(MinHeap* heap){
+//     return heap->size == 0; // return true (1) is size is 0
+// }
+
+// void printMinHeap(MinHeap* heap){
+//     for(int i=0; i< heap->size; i++) {
+//         int vertex = heap->array[i]->vertex;
+//         printf("%c, ", vertex);
+//     }
+// }
+
+// MinHeapNode* extractMin(MinHeap* heap){
+//     if(isHeapEmpty(heap)){
+//         printf("ERROR. Heap is empty.");
+//         return NULL;
+//     }
+//     // store the root
+//     MinHeapNode* root = heap->array[0];
+//     // replace root node with last node
+//     MinHeapNode* lastNode = heap->array[heap->size -1];
+//     heap->array[0] = lastNode;
+    
+//     //Update size and repair the heap with heapify()
+//     -- heap->size;
+//     heapify(heap, 0);
+
+//     return root;
 // }
 
 void dijkstra(Graph* graph, int source, int dest){
