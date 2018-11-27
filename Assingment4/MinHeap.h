@@ -1,3 +1,9 @@
+/*
+* Lots of the code in this file was taken from GeeksForGeeks website
+* https://www.geeksforgeeks.org/binary-heap/
+* https://www.geeksforgeeks.org/dijkstras-algorithm-for-adjacency-list-representation-greedy-algo-8/
+*/
+
 #ifndef MIN_HEAP
 #define MIN_HEAP
 #include <stdio.h>
