@@ -1,5 +1,6 @@
 #include "Task2.h"
-#define MAX_SIZE 40
+#include <limits.h>
+#define INFINTY INT_MAX
 
 
 int main(){
@@ -10,6 +11,7 @@ int main(){
     initialiseGraph(graph);
     printGraph(graph);
 
+    dijkstra(graph, 'A', 'B');
 
     return 0;
 }
@@ -80,93 +82,84 @@ void printGraph(Graph* graph){
     }
 }
 
-// Recursive function
-void depthFirstSearch(Graph* graph, int vertex) {
 
-    Node* temp = graph->array[vertex];
-    graph->visited[vertex] = 1;
-
-    printf("%c ", vertex);
-
-    while(temp){
-        int edge = temp->vertex;
-        if(graph->visited[edge] == 0) // if not visited
-            depthFirstSearch(graph, edge);
-        temp = temp->next;
+void printPath(int source, int dist[], int prev[], int n) { 
+    printf("Vertex \tDistance \tPath\n"); 
+    int j;
+    for (int i = 0; i < n; ++i) {        
+    printf("%c \t %d \t\t", toLetter(i), dist[i]); 
+        j = i;
+        while(j!= toIndex(-1)){
+            printf("%c <- ", toLetter(j));
+            j = toIndex(prev[j]);
+        }
+        printf("\n");
     }
-}
+} 
 
-void resetGraph(Graph* graph){
-    for(int i= 'A'; i<('A' + graph->numVertices); i++){
-        graph->visited[i] = 0; // set visited to false
-        graph->previous[i] = -1; // set previous to undefined
-    }
-}
 
-// MinHeapNode* createMinHeapNode(int vertex, int distance){
-//     MinHeapNode* new = malloc(sizeof(MinHeapNode));
-//     new->distance = distance;
-//     new->vertex = vertex;
-//     return new;
-// }
-
-// MinHeap* createMinHeap(int capacity){
-//     MinHeap* minHeap = (MinHeap*)malloc(sizeof(MinHeap));
-//     minHeap->size = 0;
-//     minHeap->capacity = capacity;
-//     minHeap->array = (MinHeapNode**)malloc(capacity * sizeof(MinHeapNode*));
-//     return minHeap;
-// }
-
-// void addToMinHeap(MinHeap* heap, Node* vertex){
-//     if(heap->size == heap->capacity){
-//         printf("ERROR. HEAP FULL.\n");
-//         return;
-//     }
-//     // Insert the new node at the end
-//     MinHeapNode* new = createMinHeapNode(vertex->vertex, vertex->distance);
-//     heap->size++;
-//     int i = heap->size -1;
-//     heap->array[i] = new;
-
-//     // Repair min heap
-//     // while youre not at the root item in heap and new is less than parent
-//     while(i != 0 && heap->array[parent(i)] > heap->array[i]){ 
-//         // swim the new node up
-//         swap( &(heap->array[i]), &(heap->array[parent(i)]) );
-//         i = parent(i);
-//     }
-// }
-
-// int isHeapEmpty(MinHeap* heap){
-//     return heap->size == 0; // return true (1) is size is 0
-// }
-
-// void printMinHeap(MinHeap* heap){
-//     for(int i=0; i< heap->size; i++) {
-//         int vertex = heap->array[i]->vertex;
-//         printf("%c, ", vertex);
-//     }
-// }
-
-// MinHeapNode* extractMin(MinHeap* heap){
-//     if(isHeapEmpty(heap)){
-//         printf("ERROR. Heap is empty.");
-//         return NULL;
-//     }
-//     // store the root
-//     MinHeapNode* root = heap->array[0];
-//     // replace root node with last node
-//     MinHeapNode* lastNode = heap->array[heap->size -1];
-//     heap->array[0] = lastNode;
-    
-//     //Update size and repair the heap with heapify()
-//     -- heap->size;
-//     heapify(heap, 0);
-
-//     return root;
-// }
+/* Pseudo code for dijkstra
+*
+*   for each vertex v in Graph:
+*       distance[v] = infinty
+*       previous[v] = undefined
+*   distance[source] = 0
+*   Q = all the vertices in the graph
+*   while Q is not empty:
+*       u = min in Q
+*       extract u from Q
+*   for each neighbour v of u:
+*       alternative = distance[u] + distance_between(u, v)
+*       if alternative < distance[v]
+*            distance[v] = alternative
+*            previous[v] = u
+*/
 
 void dijkstra(Graph* graph, int source, int dest){
 
+    int size = graph->numVertices;
+    // array to hold the minimum distance to each vertex from source
+    int distance[size];
+    // array to hold the previous vertex of each vertex
+    int previous[size];
+
+    MinHeap* heap = createMinHeap(size);
+
+    for(int v=0; v<size; v++){
+        distance[v] = INFINTY; // Distances to unvisited vertices are infinite
+        addToHeap(heap, toLetter(v), distance[v]);
+        previous[v] = -1; // previous is undefined 
+    }
+    // Distance from source to source is 0
+    distance[toIndex(source)] = 0;
+    // mark distance of source in the heap as 0 so it is extracted first
+    heap->array[toIndex(source)]->distance = 0;
+    heap->position[source] = source;
+    
+
+    while(!isHeapEmpty(heap)){
+        MinHeapNode* min = extractMin(heap);
+        int u = min->vertex;
+
+        // Traverse through all adjacent vertices of u and update 
+        // their distance from source
+        Node* pCrawl = graph->array[toIndex(u)];
+        while(pCrawl){
+            int v = pCrawl->vertex;
+
+            // If the distance to v is not permanent yet
+            // and distance to v through u is less than previous
+
+            if(isInMinHeap(heap, v) && distance[toIndex(u)] != INFINTY
+                && pCrawl->distance + distance[toIndex(u)] < distance[toIndex(v)])
+                {
+                    distance[toIndex(v)] = distance[toIndex(u)] + pCrawl->distance;
+                    decreaseDistance(heap, v, distance[toIndex(v)]);
+                    previous[toIndex(v)] = u;
+                }
+
+            pCrawl = pCrawl->next;
+        }
+    } 
+    printPath(source, distance, previous, size);
 }
