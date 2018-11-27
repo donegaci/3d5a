@@ -44,13 +44,13 @@ Graph* createGraph(int nVertices){
 }
 
 void initialiseGraph(Graph* graph){
-    insertEdge(graph, 'A', 'B');
-    insertEdge(graph, 'A', 'D');
     insertEdge(graph, 'A', 'E');
-    insertEdge(graph, 'B', 'C');
+    insertEdge(graph, 'A', 'D');    
+    insertEdge(graph, 'A', 'B');
     insertEdge(graph, 'B', 'D');
-    insertEdge(graph, 'C', 'B');
+    insertEdge(graph, 'B', 'C');
     insertEdge(graph, 'C', 'D');
+    insertEdge(graph, 'C', 'B');
     insertEdge(graph, 'D', 'F');
     insertEdge(graph, 'E', 'D');
     insertEdge(graph, 'F', 'C');

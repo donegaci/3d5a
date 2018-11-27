@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h> // to use function tolower()
 #define MAX 50 
 
 typedef struct Node Node;

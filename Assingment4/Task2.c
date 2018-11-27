@@ -123,6 +123,10 @@ void dijkstra(Graph* graph, int source, int dest){
     // array to hold the previous vertex of each vertex
     int previous[size];
 
+    // array to store the order that the ndoes were made permanent in
+    int permanent[size];
+    int count = 0;
+
     MinHeap* heap = createMinHeap(size);
 
     for(int v=0; v<size; v++){
@@ -133,33 +137,40 @@ void dijkstra(Graph* graph, int source, int dest){
     // Distance from source to source is 0
     distance[toIndex(source)] = 0;
     // mark distance of source in the heap as 0 so it is extracted first
-    heap->array[toIndex(source)]->distance = 0;
     heap->position[source] = source;
+    decreaseDistance(heap, toIndex(source), 0);
     
 
     while(!isHeapEmpty(heap)){
         MinHeapNode* min = extractMin(heap);
         int u = min->vertex;
+        permanent[count] = u;
+        count++;
 
         // Traverse through all adjacent vertices of u and update 
         // their distance from source
-        Node* pCrawl = graph->array[toIndex(u)];
-        while(pCrawl){
-            int v = pCrawl->vertex;
+        Node* temp = graph->array[toIndex(u)];
+        while(temp){
+            int v = temp->vertex;
 
             // If the distance to v is not permanent yet
             // and distance to v through u is less than previous
 
             if(isInMinHeap(heap, v) && distance[toIndex(u)] != INFINTY
-                && pCrawl->distance + distance[toIndex(u)] < distance[toIndex(v)])
+                && (temp->distance + distance[toIndex(u)]) < distance[toIndex(v)])
                 {
-                    distance[toIndex(v)] = distance[toIndex(u)] + pCrawl->distance;
+                    distance[toIndex(v)] = distance[toIndex(u)] + temp->distance;
                     decreaseDistance(heap, v, distance[toIndex(v)]);
                     previous[toIndex(v)] = u;
                 }
 
-            pCrawl = pCrawl->next;
+            temp = temp->next;
         }
     } 
     printPath(source, distance, previous, size);
+
+    printf("Order made permanent\n");
+    for(int i=0; i<size; i++)
+        printf("%c ", permanent[i]);
+    printf("\n");
 }
