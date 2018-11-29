@@ -160,7 +160,7 @@ void dijkstra(Graph* graph, int source, int dest){
                 && (temp->distance + distance[toIndex(u)]) < distance[toIndex(v)])
                 {
                     distance[toIndex(v)] = distance[toIndex(u)] + temp->distance;
-                    decreaseDistance(heap, v, distance[toIndex(v)]);
+                    decreaseDistance(heap, toIndex(v), distance[toIndex(v)]);
                     previous[toIndex(v)] = u;
                 }
 

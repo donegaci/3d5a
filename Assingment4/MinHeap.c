@@ -63,8 +63,14 @@ MinHeapNode* extractMin(MinHeap* heap){
 
     //store the root and rempve it from the heap
     MinHeapNode* root = heap->array[0];
-    heap->array[0] = heap->array[heap->size -1]; // replace the root with the left most leaf
-    heap->size--;
+    // replace the root with the left most leaf
+    MinHeapNode* lastNode = heap->array[heap->size -1]; 
+    heap->array[0] = lastNode;
+
+    //Update positon of last node
+    heap->position[root->vertex - 'A'] = heap->size-1;
+    heap->position[lastNode->vertex - 'A'] = 0;
+    --heap->size;
     minHeapify(heap, 0);
     return root;
 }
@@ -104,22 +110,12 @@ void addToHeap(MinHeap* heap, int v, int dist){
 
 void decreaseDistance(MinHeap* heap, int v, int dist) 
 { 
-    // Get the index of v in  heap array 
-    int i = heap->position[v]; 
-  
-    // Get the node and update its dist value 
-    heap->array[i]->distance = dist; 
-  
-    // Travel up while the complete tree is not hepified. 
-    // This is a O(Logn) loop 
-    while (i && heap->array[i]->distance < heap->array[(i - 1) / 2]->distance) 
-    { 
-        // Swap this node with its parent 
-        heap->position[heap->array[i]->vertex] = (i-1)/2; 
-        heap->position[heap->array[(i-1)/2]->vertex] = i; 
-        swapHeapNode(&heap->array[i],  &heap->array[(i - 1) / 2]); 
-  
-        // move to parent index 
-        i = parent(i); 
-    } 
+    heap->array[v]->distance = dist;
+
+    while(v != 0 && heap->array[parent(v)]->distance   
+        > heap->array[v]->distance)
+        {
+            swapHeapNode(&heap->array[v],&heap->array[parent(v)]);
+            v = parent(v);
+        }
 }
